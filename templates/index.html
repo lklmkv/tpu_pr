@@ -72,18 +72,19 @@
             <div class="col-lg-4">
                 <div class="filter-section">
                     <h4>Фильтр студентов по группе</h4>
-                    <form>
+                    <form id="filterForm">
                         <div class="mb-3">
                             <label for="groupSelect" class="form-label">Выберите группу</label>
-                            <select class="form-select" id="groupSelect" aria-label="Выберите группу">
-                                <option selected>Выберите группу</option>
-                                <option value="1">Группа 1</option>
-                                <option value="2">Группа 2</option>
-                                <option value="3">Группа 3</option>
+                            <select class="form-select" id="groupSelect" name="group" aria-label="Выберите группу">
+                                <option selected value="">Выберите группу</option>
+                                <option value="af0b1254-2016-4c88-9a5f-97202a9009aa">Группа 1</option>
+                                <option value="790cf708-908a-4406-a2a0-f18fd9630e49">Группа 2</option>
+                                <option value="d63380b1-2eaa-4e0d-8947-1525d1082b9c">Группа 3</option>
                             </select>
                         </div>
                         <button type="submit" class="btn filter-button text-white">Применить фильтр</button>
                     </form>
+                    
                 </div>
             </div>
 
@@ -106,41 +107,73 @@
         <p>&copy; 2024 Аналитика успеваемости студентов. </p>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> -->
     <script>
+        let myChart; 
         // Функция для получения данных с сервера
-        async function fetchData() {
-            const response = await fetch('/data');  // Запрос к Flask маршруту /data
-            const data = await response.json();
-            console.log(data);
-    
-            // Обработка данных для графика
-            const labels = data.map(item => item[0]); // Имена студентов
-            const scores = data.map(item => item[1]); // Оценки студентов
-    
-            // Создание графика
-            const ctx = document.getElementById('myChart').getContext('2d');
-            const myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Суммарный балл за предмет',
-                        data: scores,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+        async function fetchData(group) {
+        // Динамическое добавление параметра группы к запросу
+        const url = group ? `/filter_data?group=${group}` : '/filter_data';
+        try {
+                const response = await fetch(url);
+                
+                // Если ответ не в порядке, выбрасываем ошибку
+                if (!response.ok) throw new Error("Ошибка сети при получении данных");
+
+                const data = await response.json();
+                console.log("Полученные данные:", data); // Проверка данных
+
+                // Проверка на пустые данные
+                if (data.length === 0) {
+                    alert("Нет данных для выбранной группы");
+                    return;
+                }
+
+                const labels = data.map(item => item[0]);
+                const scores = data.map(item => item[1]);
+
+                const ctx = document.getElementById('myChart').getContext('2d');
+
+                // Удаление предыдущего графика, если он существует
+                if (myChart) {
+                    myChart.destroy();
+                }
+
+                // Создание нового графика
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Суммарный балл за предмет',
+                            data: scores,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
                         }
                     }
-                }
-            });
+                });
+            } catch (error) {
+                console.error("Ошибка загрузки данных:", error);
+                alert("Не удалось загрузить данные. Проверьте сервер.");
+            }
         }
+
+     // Получение группы из формы фильтрации и вызов fetchData
+     document.getElementById('filterForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const group = document.getElementById('groupSelect').value;
+            fetchData(group);
+        });
+
+
     
         // Вызов функции для отображения данных на графике
         fetchData();

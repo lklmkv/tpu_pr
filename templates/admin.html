@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление правами пользователей</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e0f7e9;
+        }
+        .navbar {
+            background-color: #3cb371;
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .admin-panel {
+            background-color: #3cb371;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .table {
+            background-color: #f0fff0;
+        }
+        .btn-primary {
+            background-color: #3cb371;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #2e8b57;
+        }
+        .footer {
+            background-color: #3cb371;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Панель администратора</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">Страница администратора</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/autoriz">Вход</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Панель администратора -->
+    <div class="container mt-5">
+        <div class="admin-panel">
+            <h4>Управление правами пользователей</h4>
+            <p>Здесь вы можете просматривать и изменять права пользователей.</p>
+        </div>
+
+        <!-- Таблица пользователей -->
+        <table class="table table-striped">
+            <thead class="table-success">
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Имя пользователя</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Роль</th>
+                    <th scope="col">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Иван Иванов</td>
+                    <td>ivan@example.com</td>
+                    <td>
+                        <select class="form-select" aria-label="Роль пользователя">
+                            <option selected>Пользователь</option>
+                            <option value="1">Администратор</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary">Сохранить</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Анна Петрова</td>
+                    <td>anna@example.com</td>
+                    <td>
+                        <select class="form-select" aria-label="Роль пользователя">
+                            <option selected>Пользователь</option>
+                            <option value="1">Администратор</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary">Сохранить</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td>Мария Смирнова</td>
+                    <td>maria@example.com</td>
+                    <td>
+                        <select class="form-select" aria-label="Роль пользователя">
+                            <option selected>Пользователь</option>
+                            <option value="1">Администратор</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary">Сохранить</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Нижний колонтитул -->
+    <footer class="footer mt-5">
+        <p>&copy; 2024 Панель администратора. Все права защищены.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, request, jsonify
 import psycopg2
 
 app = Flask(__name__)
@@ -19,19 +19,33 @@ def get_db_connection():
 def index():
     return render_template('index.html')
 
-# Маршрут для получения данных в формате JSON
-@app.route('/data')
-def get_data():
+# Маршрут для получения данных по фильтру группы
+@app.route('/filter_data')
+def filter_data():
+    group = request.args.get('group')  # Получаем выбранную группу из параметра запроса
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT  discipline_id, SUM(ball)  FROM zhurnal_ocenok  where lichnost_guid = 'ee3f1a6b-8c7e-4d02-8d1b-91042600aed2' GROUP BY discipline_id;")  
+
+  # SELECT discipline_id, SUM(ball) 
+    # FROM zhurnal_ocenok 
+    # WHERE group_id = %s
+    # GROUP BY discipline_id;
+    # Запрос с фильтрацией по группе (при необходимости модифицируйте)
+
+    # сейчас фильтрация работает для трех групп, выдает по группе гистограмму: студент - число пропусков (суммарное)
+    query = """
+    SELECT lichnost_guid, count(propusk)
+	FROM public.propuski
+    where gruppa_guid = %s GROUP BY lichnost_guid;
+    """
+    cursor.execute(query, (group,))
     data = cursor.fetchall()
+
     cursor.close()
     conn.close()
-
-    # Преобразование данных в формат JSON
     return jsonify(data)
 
+# Пример маршрутов для других страниц
 @app.route('/admin')
 def admin():
     return render_template('admin.html')
@@ -39,10 +53,6 @@ def admin():
 @app.route('/autoriz')
 def autoriz():
     return render_template('autoriz.html')
-#@app.route('/data')
-# def get_data():
-#     # Временно возвращаем тестовые данные для проверки скорости
-#     return jsonify([['Student1', 85], ['Student2', 90]])
 
 if __name__ == '__main__':
     app.run(debug=True)

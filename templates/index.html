@@ -92,8 +92,9 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Аналитика успеваемости</h5>
-                        <p class="card-text">Здесь будут отображаться данные об успеваемости студентов после применения фильтров.</p>
-                        <canvas id="myChart" width="400" height="200"></canvas>
+                        <p class="card-text">Здесь будут отображаться данные о пропусках и оценках студентов после применения фильтров.</p>
+                        <canvas id="absenceChart" width="400" height="200"></canvas>
+                        <canvas id="gradesChart" width="400" height="200" class="mt-4"></canvas>
 
                     </div>
                 </div>
@@ -107,46 +108,40 @@
         <p>&copy; 2024 Аналитика успеваемости студентов. </p>
     </footer>
 
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> -->
     <script>
-        let myChart; 
-        // Функция для получения данных с сервера
+        let absenceChart, gradesChart;
+
         async function fetchData(group) {
-        // Динамическое добавление параметра группы к запросу
-        const url = group ? `/filter_data?group=${group}` : '/filter_data';
-        try {
+            const url = group ? `/filter_data?group=${group}` : '/filter_data';
+            try {
                 const response = await fetch(url);
-                
-                // Если ответ не в порядке, выбрасываем ошибку
                 if (!response.ok) throw new Error("Ошибка сети при получении данных");
 
                 const data = await response.json();
-                console.log("Полученные данные:", data); // Проверка данных
+                console.log("Полученные данные:", data);
 
-                // Проверка на пустые данные
                 if (data.length === 0) {
                     alert("Нет данных для выбранной группы");
                     return;
                 }
 
                 const labels = data.map(item => item[0]);
-                const scores = data.map(item => item[1]);
+                const absences = data.map(item => item[1]);
+                const grades = data.map(item => item[2]);
 
-                const ctx = document.getElementById('myChart').getContext('2d');
+                const absenceCtx = document.getElementById('absenceChart').getContext('2d');
+                const gradesCtx = document.getElementById('gradesChart').getContext('2d');
 
-                // Удаление предыдущего графика, если он существует
-                if (myChart) {
-                    myChart.destroy();
-                }
+                if (absenceChart) absenceChart.destroy();
+                if (gradesChart) gradesChart.destroy();
 
-                // Создание нового графика
-                myChart = new Chart(ctx, {
+                absenceChart = new Chart(absenceCtx, {
                     type: 'bar',
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: 'Суммарный балл за предмет',
-                            data: scores,
+                            label: 'Число пропусков',
+                            data: absences,
                             backgroundColor: 'rgba(75, 192, 192, 0.2)',
                             borderColor: 'rgba(75, 192, 192, 1)',
                             borderWidth: 1
@@ -154,9 +149,26 @@
                     },
                     options: {
                         scales: {
-                            y: {
-                                beginAtZero: true
-                            }
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+
+                gradesChart = new Chart(gradesCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Оценки',
+                            data: grades,
+                            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: { beginAtZero: true }
                         }
                     }
                 });
@@ -166,16 +178,12 @@
             }
         }
 
-     // Получение группы из формы фильтрации и вызов fetchData
-     document.getElementById('filterForm').addEventListener('submit', (event) => {
+        document.getElementById('filterForm').addEventListener('submit', (event) => {
             event.preventDefault();
             const group = document.getElementById('groupSelect').value;
             fetchData(group);
         });
 
-
-    
-        // Вызов функции для отображения данных на графике
         fetchData();
     </script>
     

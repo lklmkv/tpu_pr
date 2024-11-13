@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Аналитика успеваемости студентов</title>
+    <title>Управление правами пользователей</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
         body {
             background-color: #e0f7e9;
@@ -17,21 +15,22 @@
         .navbar-brand, .nav-link {
             color: white !important;
         }
-        .filter-section {
+        .admin-panel {
             background-color: #3cb371;
             color: white;
             padding: 20px;
             border-radius: 10px;
+            margin-bottom: 20px;
         }
-        .filter-button {
-            background-color: #2e8b57;
+        .table {
+            background-color: #f0fff0;
+        }
+        .btn-primary {
+            background-color: #3cb371;
             border: none;
         }
-        .filter-button:hover {
-            background-color: #256d47;
-        }
-        .card {
-            border-color: #3cb371;
+        .btn-primary:hover {
+            background-color: #2e8b57;
         }
         .footer {
             background-color: #3cb371;
@@ -46,7 +45,7 @@
     <!-- Навигационная панель -->
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Аналитика успеваемости</a>
+            <a class="navbar-brand" href="#">Панель администратора</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -66,126 +65,76 @@
         </div>
     </nav>
 
-    <!-- Основной контент -->
+    <!-- Панель администратора -->
     <div class="container mt-5">
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="filter-section">
-                    <h4>Фильтр студентов по группе</h4>
-                    <form id="filterForm">
-                        <div class="mb-3">
-                            <label for="groupSelect" class="form-label">Выберите группу</label>
-                            <select class="form-select" id="groupSelect" name="group" aria-label="Выберите группу">
-                                <option selected value="">Выберите группу</option>
-                                <option value="af0b1254-2016-4c88-9a5f-97202a9009aa">Группа 1</option>
-                                <option value="790cf708-908a-4406-a2a0-f18fd9630e49">Группа 2</option>
-                                <option value="d63380b1-2eaa-4e0d-8947-1525d1082b9c">Группа 3</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn filter-button text-white">Применить фильтр</button>
-                    </form>
-                    
-                </div>
-            </div>
-
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Аналитика успеваемости</h5>
-                        <p class="card-text">Здесь будут отображаться данные о пропусках и оценках студентов после применения фильтров.</p>
-                        <canvas id="absenceChart" width="400" height="200"></canvas>
-                        <canvas id="gradesChart" width="400" height="200" class="mt-4"></canvas>
-
-                    </div>
-                </div>
-            </div>
-            
+        <div class="admin-panel">
+            <h4>Управление правами пользователей</h4>
+            <p>Здесь вы можете просматривать и изменять права пользователей.</p>
         </div>
+
+        <!-- Таблица пользователей -->
+        <table class="table table-striped">
+            <thead class="table-success">
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Имя пользователя</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Роль</th>
+                    <th scope="col">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Иван Иванов</td>
+                    <td>ivan@example.com</td>
+                    <td>
+                        <select class="form-select" aria-label="Роль пользователя">
+                            <option selected>Пользователь</option>
+                            <option value="1">Администратор</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary">Сохранить</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Анна Петрова</td>
+                    <td>anna@example.com</td>
+                    <td>
+                        <select class="form-select" aria-label="Роль пользователя">
+                            <option selected>Пользователь</option>
+                            <option value="1">Администратор</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary">Сохранить</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td>Мария Смирнова</td>
+                    <td>maria@example.com</td>
+                    <td>
+                        <select class="form-select" aria-label="Роль пользователя">
+                            <option selected>Пользователь</option>
+                            <option value="1">Администратор</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary">Сохранить</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <!-- Нижний колонтитул -->
     <footer class="footer mt-5">
-        <p>&copy; 2024 Аналитика успеваемости студентов. </p>
+        <p>&copy; 2024 Панель администратора. Все права защищены.</p>
     </footer>
 
-    <script>
-        let absenceChart, gradesChart;
-
-        async function fetchData(group) {
-            const url = group ? `/filter_data?group=${group}` : '/filter_data';
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error("Ошибка сети при получении данных");
-
-                const data = await response.json();
-                console.log("Полученные данные:", data);
-
-                if (data.length === 0) {
-                    alert("Нет данных для выбранной группы");
-                    return;
-                }
-
-                const labels = data.map(item => item[0]);
-                const absences = data.map(item => item[1]);
-                const grades = data.map(item => item[2]);
-
-                const absenceCtx = document.getElementById('absenceChart').getContext('2d');
-                const gradesCtx = document.getElementById('gradesChart').getContext('2d');
-
-                if (absenceChart) absenceChart.destroy();
-                if (gradesChart) gradesChart.destroy();
-
-                absenceChart = new Chart(absenceCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Число пропусков',
-                            data: absences,
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: { beginAtZero: true }
-                        }
-                    }
-                });
-
-                gradesChart = new Chart(gradesCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Оценки',
-                            data: grades,
-                            backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                            borderColor: 'rgba(255, 159, 64, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: { beginAtZero: true }
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error("Ошибка загрузки данных:", error);
-                alert("Не удалось загрузить данные. Проверьте сервер.");
-            }
-        }
-
-        document.getElementById('filterForm').addEventListener('submit', (event) => {
-            event.preventDefault();
-            const group = document.getElementById('groupSelect').value;
-            fetchData(group);
-        });
-
-        fetchData();
-    </script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

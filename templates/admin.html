@@ -55,10 +55,13 @@
                         <a class="nav-link" href="/">Главная</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="/model">Прогноз</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/admin">Страница администратора</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/autoriz">Вход</a>
+                        <a class="nav-link" href="/autoriz">Выйти</a>
                     </li>
                 </ul>
             </div>
@@ -76,14 +79,33 @@
         <table class="table table-striped">
             <thead class="table-success">
                 <tr>
-                    <th scope="col"></th>
-                    <th scope="col">Имя пользователя</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Роль</th>
-                    <th scope="col">Действия</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Full Name</th>
+                    <th scope="col">Username (Email)</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            {% for user in users %}
+            <tr>
+                <form method="POST">
+                    <td>{{ user[0] }}</td>
+                    <td style="width: 300px; height: 50px;"><input class="form-control" type="text" name="full_name" value="{{ user[1] }}"></td>
+                    <td>{{ user[2] }}</td>
+                    <td>
+                        <select name="role" class="form-select" aria-label="Роль пользователя">
+                            <option value="Admin" {% if user[3] == 'Admin' %}selected{% endif %}>Admin</option>
+                            <option value="User" {% if user[3] == 'User' %}selected{% endif %}>User</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="hidden" name="user_id" value="{{ user[0] }}">
+                        <button class="btn btn-primary" type="submit">Сохранить</button>
+                    </td>
+                </form>
+            </tr>
+            {% endfor %}
+            <!-- <tbody>
                 <tr>
                     <th scope="row">1</th>
                     <td>Иван Иванов</td>
@@ -126,7 +148,7 @@
                         <button class="btn btn-primary">Сохранить</button>
                     </td>
                 </tr>
-            </tbody>
+            </tbody> -->
         </table>
     </div>
 

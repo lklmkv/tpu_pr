@@ -56,10 +56,13 @@
                         <a class="nav-link" href="/">Главная</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="/model">Прогноз</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/admin">Страница администратора</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/autoriz">Вход</a>
+                        <a class="nav-link" href="/autoriz">Выйти</a>
                     </li>
                 </ul>
             </div>
@@ -71,15 +74,27 @@
         <div class="row">
             <div class="col-lg-4">
                 <div class="filter-section">
-                    <h4>Фильтр студентов по группе</h4>
+                    <h4>Фильтр студентов</h4>
                     <form id="filterForm">
+                        <!-- Фильтр по группе -->
                         <div class="mb-3">
                             <label for="groupSelect" class="form-label">Выберите группу</label>
                             <select class="form-select" id="groupSelect" name="group" aria-label="Выберите группу">
                                 <option selected value="">Выберите группу</option>
-                                <option value="af0b1254-2016-4c88-9a5f-97202a9009aa">Группа 1</option>
-                                <option value="790cf708-908a-4406-a2a0-f18fd9630e49">Группа 2</option>
-                                <option value="d63380b1-2eaa-4e0d-8947-1525d1082b9c">Группа 3</option>
+                                <option value="06d5726d-8155-44ca-859f-e1cce3da2346">Группа 1</option>
+                                <option value="016dd4c4-e906-4687-bfff-6afd2a3b8a63">Группа 2</option>
+                                <option value="07b1e1aa-6339-4bb8-9b83-75fecaa0a97d">Группа 3</option>
+                            </select>
+                        </div>
+                        <!-- Фильтр по семестру -->
+                        <div class="mb-3">
+                            <label for="semesterSelect" class="form-label">Выберите семестр</label>
+                            <select class="form-select" id="semesterSelect" name="semester" aria-label="Выберите семестр">
+                                <option selected value="">Выберите семестр</option>
+                                <option value="1">Семестр 1</option>
+                                <option value="2">Семестр 2</option>
+                                <option value="3">Семестр 3</option>
+                                <option value="4">Семестр 4</option>
                             </select>
                         </div>
                         <button type="submit" class="btn filter-button text-white">Применить фильтр</button>
@@ -93,9 +108,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Аналитика успеваемости</h5>
                         <p class="card-text">Здесь будут отображаться данные о пропусках и оценках студентов после применения фильтров.</p>
-                        <canvas id="absenceChart" width="400" height="200"></canvas>
-                        <canvas id="gradesChart" width="400" height="200" class="mt-4"></canvas>
-
+                        <canvas id="combinedChart" width="400" height="200"></canvas>
                     </div>
                 </div>
             </div>
@@ -109,10 +122,10 @@
     </footer>
 
     <script>
-        let absenceChart, gradesChart;
+        let combinedChart;
 
-        async function fetchData(group) {
-            const url = group ? `/filter_data?group=${group}` : '/filter_data';
+        async function fetchData(group, semester) {
+            const url = `/filter_data?group=${group}&semester=${semester}`;
             try {
                 const response = await fetch(url);
                 if (!response.ok) throw new Error("Ошибка сети при получении данных");
@@ -121,7 +134,7 @@
                 console.log("Полученные данные:", data);
 
                 if (data.length === 0) {
-                    alert("Нет данных для выбранной группы");
+                    alert("Нет данных для выбранной группы и семестра");
                     return;
                 }
 
@@ -129,42 +142,31 @@
                 const absences = data.map(item => item[1]);
                 const grades = data.map(item => item[2]);
 
-                const absenceCtx = document.getElementById('absenceChart').getContext('2d');
-                const gradesCtx = document.getElementById('gradesChart').getContext('2d');
+                const ctx = document.getElementById('combinedChart').getContext('2d');
 
-                if (absenceChart) absenceChart.destroy();
-                if (gradesChart) gradesChart.destroy();
+                // Если график уже существует, уничтожаем его перед созданием нового
+                if (combinedChart) combinedChart.destroy();
 
-                absenceChart = new Chart(absenceCtx, {
+                combinedChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: labels,
-                        datasets: [{
-                            label: 'Число пропусков',
-                            data: absences,
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: { beginAtZero: true }
-                        }
-                    }
-                });
-
-                gradesChart = new Chart(gradesCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Оценки',
-                            data: grades,
-                            backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                            borderColor: 'rgba(255, 159, 64, 1)',
-                            borderWidth: 1
-                        }]
+                        datasets: [
+                            {
+                                label: 'Число пропусков',
+                                data: absences,
+                                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Оценки',
+                                data: grades,
+                                backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                                borderColor: 'rgba(255, 159, 64, 1)',
+                                borderWidth: 1
+                            }
+                        ]
                     },
                     options: {
                         scales: {
@@ -181,10 +183,11 @@
         document.getElementById('filterForm').addEventListener('submit', (event) => {
             event.preventDefault();
             const group = document.getElementById('groupSelect').value;
-            fetchData(group);
+            const semester = document.getElementById('semesterSelect').value;
+            fetchData(group, semester);
         });
 
-        fetchData();
+        fetchData('', '');
     </script>
     
 </body>
